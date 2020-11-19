@@ -1,0 +1,1 @@
+export default () => !!localStorage.getItem('BASHGAH_YAR_ENTRY_TOKEN')
