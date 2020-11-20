@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, useHistory } from 'react-router-dom'
 import isAuth from '../Utils/isAuth'
 import useProfile from '../Components/GlobalComponents/CustomHooks/useProfile'
+import useCheckRoute from '../Components/GlobalComponents/CustomHooks/useCheckRoute'
 
 export default (route) => {
     const { path, title, isProtected } = route
@@ -12,6 +13,7 @@ export default (route) => {
     if (!isProtected && isAuth()) history.push('/dashboard')
 
     useProfile()
+    useCheckRoute(path)
     return (
         <Route
             path={path}
