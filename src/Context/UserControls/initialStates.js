@@ -1,0 +1,16 @@
+export default {
+    inputType: null,
+    gymAdmins: null,
+    inputShow: false,
+    gymCoaches: null,
+    gymAthletes: null,
+    selectedUser: null,
+    isSearching: false,
+    userControlsErr: null,
+    searchedGymAdmins: null,
+    searchedGymCoaches: null,
+    searchedGymAthletes: null,
+    successfulUserDelete: false,
+    changePassEmailPending: false,
+    changePassConfirmSuccess: false,
+}

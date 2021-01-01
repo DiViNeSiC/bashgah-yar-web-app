@@ -1,12 +1,15 @@
 import React from 'react'
 import uuid from 'uuid/v4'
-import routes from './Routes/routes'
-import RenderRoutes from './Routes/render'
+import { appContainer } from './Assets/Styles/mainStyles'
 import { GlobalProvider } from './Context/provider'
 import { Switch, BrowserRouter as Router } from 'react-router-dom'
-import LoadingComponent from './Components/GlobalComponents/LoadingComponent'
-import ToasterComponent from './Components/GlobalComponents/ToasterComponent'
-import NavbarComponent from './Components/GlobalComponents/NavbarComponent'
+import routes from './Routes/routes'
+import RenderRoutes from './Routes/render'
+import NavbarComponent from './Components/Global/NavbarComponent'
+import LoadingComponent from './Components/Global/LoadingComponent'
+import ToasterComponent from './Components/Global/ToasterComponent'
+import './Assets/Css/main.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default () => (
     <GlobalProvider>
@@ -15,13 +18,10 @@ export default () => (
           <NavbarComponent />
           <LoadingComponent />
           <ToasterComponent />
-          <div>
-            <Switch>
-              {routes.map(route => <RenderRoutes key={uuid()} {...route} />)}
-            </Switch>
+          <div style={appContainer}>
+            <Switch>{routes.map(route => <RenderRoutes key={uuid()} {...route} />)}</Switch>
           </div>
         </div>
       </Router>
     </GlobalProvider>
 )
-

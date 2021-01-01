@@ -1,16 +1,17 @@
 import React from 'react'
-import { Route, useHistory } from 'react-router-dom'
 import isAuth from '../Utils/isAuth'
-import useProfile from '../Components/GlobalComponents/CustomHooks/useProfile'
-import useCheckRoute from '../Components/GlobalComponents/CustomHooks/useCheckRoute'
+import { NA_ROUTE } from '../Constants/routeInfos'
+import { Route, useHistory } from 'react-router-dom'
+import useProfile from '../Components/Global/CustomHooks/useProfile'
+import useCheckRoute from '../Components/Global/CustomHooks/useCheckRoute'
 
 export default (route) => {
     const { path, title, isProtected } = route
     const history = useHistory()
     document.title = title
 
-    if (isProtected && !isAuth()) history.push('/login')
-    if (!isProtected && isAuth()) history.push('/dashboard')
+    if (isProtected && !isAuth() && isProtected !== NA_ROUTE) history.push('/login')
+    if (!isProtected && isAuth() && isProtected !== NA_ROUTE) history.push('/dashboard')
 
     useProfile()
     useCheckRoute(path)
