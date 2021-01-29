@@ -1,9 +1,9 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { GlobalContext } from '../../../Context/provider'
-import { useHistory } from "react-router-dom"
 import { getUser } from "../../../Context/Auth/actions"
+import { GlobalContext } from '../../../Context/provider'
 import setUserRoleText from '../../../Utils/setUserRoleText'
 import { toasterError } from "../../../Context/GlobalStates/actions"
+import { AVATAR_FILE_CANT_BE_EMPTY } from "../../../Constants/responseMessages"
 import { sendActivationAccountEmail } from '../../../Context/RegisterControls/actions'
 import { EMAIL_TYPE, CREDENTIALS_TYPE, CURRENT_PASS_TYPE } from '../../../Constants/Actions/userControls'
 import { 
@@ -12,24 +12,32 @@ import {
 } from '../../../Context/UserControls/actions'
 
 export default () => {
-    const history = useHistory()
     const avatarInputRef = useRef()
     const [email, setEmail] = useState()
     const [newAvatar, setNewAvatar] = useState()
     const [newAvatarImage, setNewAvatarImage] = useState()
     const [currentPassword, setCurrentPassword] = useState()
     const [credentials, setCredentials] = useState({ username: '', name: '', lastname: '', phoneNumber: '' })
-    const { authDispatch, registersDispatch, globalDispatch, userControlsDispatch, authState: { user }, registersState: { activeAccountEmailPending }, 
+    const { history, authDispatch, registersDispatch, globalDispatch, userControlsDispatch, authState: { user }, registersState: { activeAccountEmailPending }, 
         userControlsState: { inputShow, inputType, changePassConfirmSuccess } 
     } = useContext(GlobalContext)
     
     const emailOnChange = (e) => { setEmail(e.target.value) }
-    const onClickAvatarInput = () => avatarInputRef.current.click() 
+    const onClickAvatarInput = () => avatarInputRef.current.click()
+
     const newAvatarOnChange = (e) => { setNewAvatar(e.target.files[0]) }
     const onInputType = (type) => { setInputType(type)(userControlsDispatch) }
+
     const currentPasswordOnChange = (e) => { setCurrentPassword(e.target.value) }
-    const credentialsOnChange = ({ target: { name, value }}) => { setCredentials({ ...credentials, [name]: value }) }
-    const onDeleteNewAvatar = () => { avatarInputRef.current.value = null; setNewAvatar(null); setNewAvatarImage(null) }
+
+    const credentialsOnChange = ({ target: { name, value }}) => {
+        setCredentials({ ...credentials, [name]: value })
+    }
+
+    const onDeleteNewAvatar = () => {
+        avatarInputRef.current.value = null
+        setNewAvatar(null); setNewAvatarImage(null)
+    }
 
     const setStateValues = () => {
         if (!user) return
@@ -38,7 +46,7 @@ export default () => {
         setCredentials({ username, name, lastname, phoneNumber })
     }
 
-    const getUserProfile = async () => { await getUser(authDispatch, globalDispatch) }
+    const getUserProfile = async () => { await getUser(authDispatch, globalDispatch, history) }
     
     const onInputShow = (state = true) => {
         setInputShow(state)(userControlsDispatch)
@@ -46,26 +54,26 @@ export default () => {
     }
 
     const onUpdateCredentials = async () => {
-        await updateCredentials(credentials, getUserProfile, onInputShow)(globalDispatch)
+        await updateCredentials(credentials, getUserProfile, onInputShow)(globalDispatch, history)
     }
 
     const onUpdateEmail = async () => { 
-        await updateEmail(email, getUserProfile, onInputShow)(globalDispatch)
+        await updateEmail(email, getUserProfile, onInputShow)(globalDispatch, history)
     }
     
     const onUpdateAvatar = async () => { 
-        if (!newAvatar) return toasterError('فایل آواتار نباید خالی باشد')(globalDispatch)
+        if (!newAvatar) return toasterError(AVATAR_FILE_CANT_BE_EMPTY)(globalDispatch)
         const formData = new FormData()
         formData.append('avatar', newAvatar)
-        await updateAvatar(formData, getUserProfile, onDeleteNewAvatar)(globalDispatch)
+        await updateAvatar(formData, getUserProfile, onDeleteNewAvatar)(globalDispatch, history)
     }
 
     const onDeleteAvatar = async () => { 
-        await deleteAvatar(getUserProfile)(globalDispatch)
+        await deleteAvatar(getUserProfile)(globalDispatch, history)
     }
     
     const onSendChangePassEmail = async () => { 
-        await sendChangePasswordEmail(currentPassword, onInputShow)(userControlsDispatch, globalDispatch)
+        await sendChangePasswordEmail(currentPassword, onInputShow)(userControlsDispatch, globalDispatch, history)
     }
 
     const disableSuccess = () => {
@@ -84,7 +92,8 @@ export default () => {
     }
 
     const onActiveAccountRequest = async () => {
-        if (!activeAccountEmailPending) await sendActivationAccountEmail(registersDispatch, globalDispatch)
+        if (!activeAccountEmailPending) 
+            await sendActivationAccountEmail(registersDispatch, globalDispatch, history)
     }
 
     useEffect(setStateValues, [user])

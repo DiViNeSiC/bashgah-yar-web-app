@@ -1,11 +1,13 @@
 import { SITE_ADMIN_ROLE, GYM_ADMIN_ROLE, GYM_MANAGER_ROLE } from './roles'
 
-export const registerTypes = { gym: '', admin: 'admin', coach: 'coach', manager: 'manager', athlete: 'athlete' }
+export const registerTypes = { support: 'support', medic: 'medic', gym: 'gym', admin: 'admin', coach: 'coach', manager: 'manager', athlete: 'athlete' }
 export const methods = [
     {
         userRole: SITE_ADMIN_ROLE,
         registerMethods: [
-            { name: 'مدیر باشگاه', value: registerTypes.admin }
+            { name: 'مدیر باشگاه', value: registerTypes.admin },
+            { name: 'پشتیبان', value: registerTypes.support },
+            { name: 'پزشک', value: registerTypes.medic },
         ]
     },
     {

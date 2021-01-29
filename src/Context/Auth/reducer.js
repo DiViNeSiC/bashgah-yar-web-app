@@ -1,5 +1,5 @@
 import { 
-    SEND_CONFIRMATION_CODE_LOADING, SEND_CONFIRMATION_CODE_TIME_DISABLE,
+    SEND_CONFIRMATION_CODE_LOADING, SEND_CONFIRMATION_CODE_TIME_DISABLE, REFRESH_TOKEN,
     LOGOUT_STATES_DISABLE, CHANGE_PASS_CONFIRM_WITH_TOKEN, SEND_CONFIRMATION_CODE_SUCCESS,
     REGULAR_LOGIN_SUCCESS, LOGOUT_LOADING, LOGOUT_SUCCESS, GET_USER_PROFILE, CONFIRM_CODE_SUCCESS,
     FORGOT_PASS_WITH_EMAIL, FORGOT_PASS_WITH_PHONE, CONFIRM_CODE_FORM_HIDE, CHANGE_PASS_CONFIRM_WITH_CODE,
@@ -38,6 +38,17 @@ export default (state, { payload, type }) => {
                 return { ...state, user: payload.user, regularLoginToken: null }
             }
 
+            return { ...state }
+        }
+
+        case REFRESH_TOKEN: {
+            const { newEntryToken, newRefreshToken } = payload
+            if (newEntryToken && newRefreshToken) {
+                localStorage.BASHGAH_YAR_ENTRY_TOKEN = newEntryToken
+                localStorage.BASHGAH_YAR_REFRESH_TOKEN = newRefreshToken
+                return { ...state, user: payload.user }
+            }
+            
             return { ...state }
         }
 

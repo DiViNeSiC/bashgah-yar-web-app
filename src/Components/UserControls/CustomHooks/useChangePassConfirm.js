@@ -1,21 +1,21 @@
 import { useContext, useEffect, useState } from "react"
-import { useHistory, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { GlobalContext } from '../../../Context/provider'
 import { toasterError } from "../../../Context/GlobalStates/actions"
+import { EMPTY_CHANGE_PASS_TOKEN } from "../../../Constants/responseMessages"
 import { changePasswordConfirm, changePassConfirmSuccessDisable } from '../../../Context/UserControls/actions'
 
 export default () => {
-    const history = useHistory()
     const { changePasswordToken } = useParams()
     const [newPassword, setNewPassword] = useState()
-    const { globalDispatch, userControlsDispatch, userControlsState: { changePassConfirmSuccess } } = useContext(GlobalContext)
+    const { history, globalDispatch, userControlsDispatch, userControlsState: { changePassConfirmSuccess } } = useContext(GlobalContext)
 
     const newPasswordOnChange = (e) => { setNewPassword(e.target.value) }
     
     const onChangePassConfirm = async (e) => { 
         e.preventDefault()
-        if (!changePasswordToken) return toasterError('کد تغییر رمز نباید خالی باشد')(globalDispatch)
-        await changePasswordConfirm(changePasswordToken, newPassword)(userControlsDispatch, globalDispatch)
+        if (!changePasswordToken) return toasterError(EMPTY_CHANGE_PASS_TOKEN)(globalDispatch)
+        await changePasswordConfirm(changePasswordToken, newPassword)(userControlsDispatch, globalDispatch, history)
     }
 
     const disableSuccess = () => {

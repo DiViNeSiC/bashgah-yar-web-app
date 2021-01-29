@@ -10,7 +10,7 @@ export default () => {
     const avatarHandler = useAvatar()
     const gymPicsHandler = useGymPicField()
     const [formValue, setFormValue] = useState({})
-    const { globalDispatch, registersDispatch, authState: { user }, registersState: { 
+    const { history, globalDispatch, registersDispatch, authState: { user }, registersState: { 
         selectedMethod, registerSuccess, avatarFile, gymPics 
     }} = useContext(GlobalContext)
 
@@ -51,7 +51,7 @@ export default () => {
     }
 
     const handleRegister = async (formData) => {
-        await registerNewUser(selectedMethod.value, formData)(registersDispatch, globalDispatch)
+        await registerNewUser(selectedMethod.value, formData)(registersDispatch, globalDispatch, history)
     }
 
     const handleClearForm = () => {

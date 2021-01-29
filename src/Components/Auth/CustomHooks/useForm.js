@@ -1,16 +1,14 @@
 import { useContext, useEffect, useState } from "react"
-import { useHistory } from "react-router-dom"
 import { GlobalContext } from "../../../Context/provider"
 import { sendCode, confirmCode, regularLogin, confirmCodeFormHide, sendConfirmCodeTimeDisable } from '../../../Context/Auth/actions'
 
 const SEND_CODE_CONFIRMATION_TIME = 60
 
 export default () => {
-    const history = useHistory()
     const [timer, setTimer] = useState()
     const [timeInterval, setTimeInterval] = useState()
     const [formData, setFormData] = useState({ remember: false })
-    const { authDispatch, globalDispatch, authState: { 
+    const { history, authDispatch, globalDispatch, authState: { 
         regularLoginToken, confirmationCodeFormShow, sendConfirmationCodeTimer, sendConfirmCodeLoading 
     }} = useContext(GlobalContext)
 

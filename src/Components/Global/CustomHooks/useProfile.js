@@ -4,9 +4,9 @@ import { getUser } from '../../../Context/Auth/actions'
 import isAuth from '../../../Utils/isAuth'
 
 export default () => {
-    const { globalDispatch, authDispatch, authState: { user } } = useContext(GlobalContext)
+    const { history, globalDispatch, authDispatch, authState: { user } } = useContext(GlobalContext)
     const handleUserProfileRequest = async () => {
-        if (isAuth() && !user) await getUser(authDispatch, globalDispatch)
+        if (isAuth() && !user) await getUser(authDispatch, globalDispatch, history)
     }
 
     const sendRequestForProfile = () => { handleUserProfileRequest() }

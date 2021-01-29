@@ -3,6 +3,7 @@ import { GlobalContext } from "../../../Context/provider"
 import { registerTypes } from '../../../Constants/registerMethods'
 import { setGymPicFiles } from '../../../Context/RegisterControls/actions'
 import { toasterError, toasterInfo, toasterWarning } from "../../../Context/GlobalStates/actions"
+import { ALL_GYM_PICS_DELETED, GYM_PICS_ARE_EMPTY, GYM_PIC_ADDED, GYM_PIC_DELETED } from '../../../Constants/responseMessages'
 
 export default () => {
     const gymPicsInputRef = useRef()
@@ -11,26 +12,22 @@ export default () => {
 
     const onClickGymPicsInput = () => gymPicsInputRef.current.click()
 
-    const onPickFile = ({ target: { files }}) => {
-        const msg = 'تصویر جدید اضافه گردید'
+    const onPickFile = ({ target: { files } }) => {
         const tempFiles = gymPics ? gymPics : []
         if (!files[0] || !files.length) return setGymPicFiles(tempFiles, false, null, null)(registersDispatch, globalDispatch)
         const newFiles = [...tempFiles, { file: files[0], objUrl: URL.createObjectURL(files[0]) }]
-        setGymPicFiles(newFiles, true, msg, toasterInfo)(registersDispatch, globalDispatch)
+        setGymPicFiles(newFiles, true, GYM_PIC_ADDED, toasterInfo)(registersDispatch, globalDispatch)
     }
 
     const onDeleteFile = (fileBlob) => () => {
-        const msg = 'تصویر مورد نظر پاک گردید'
         const newFiles = gymPics.filter(file => file.objUrl !== fileBlob)
-        setGymPicFiles(newFiles, true, msg, toasterError)(registersDispatch, globalDispatch)
+        setGymPicFiles(newFiles, true, GYM_PIC_DELETED, toasterError)(registersDispatch, globalDispatch)
     }
 
     const deleteAllFiles = (sendMessage = true) => () => {
-        const warnMsg = 'تصاویر خالی هستند'
-        const mainMsg = 'تمامی تصاویر پاک شدند'
         if (!selectedMethod || selectedMethod.value !== registerTypes.gym) return
-        if (sendMessage && (!gymPics || !gymPics.length)) return toasterWarning(warnMsg)(globalDispatch)
-        setGymPicFiles([], sendMessage, mainMsg, toasterError)(registersDispatch, globalDispatch)
+        if (sendMessage && (!gymPics || !gymPics.length)) return toasterWarning(GYM_PICS_ARE_EMPTY)(globalDispatch)
+        setGymPicFiles([], sendMessage, ALL_GYM_PICS_DELETED, toasterError)(registersDispatch, globalDispatch)
     }
 
     const setDisplayImages = () => {

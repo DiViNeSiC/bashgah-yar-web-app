@@ -59,7 +59,7 @@ export const getGymAthletes = async (dispatch, globalDispatch, history = null) =
 export const getUserById = (userId) => async (dispatch, globalDispatch, history = null) => {
     try {
         enableLoading(globalDispatch)
-        const response = await axios(history).get(`/user/all/${userId}`)
+        const response = await axios(history).get(`/user/users/${userId}`)
         dispatch({ type: GET_USER_BY_ID_SUCCESS, payload: response.data.user })
         disableLoading(globalDispatch)
     } catch (err) {
@@ -83,13 +83,48 @@ export const deleteGymStaffById = (userId) => async (dispatch, globalDispatch, h
     }
 }
 
+export const changeUserBanState = (userId, banState = true) => async (globalDispatch, history = null) => {
+    try {
+        enableLoading(globalDispatch)
+        const url = banState ? `/user/ban/${userId}` : `/user/unban/${userId}`
+        const response = await axios(history).put(url)
+        toasterSuccess(response.data.message)(globalDispatch)
+    } catch (err) {
+        const error = err.response ? err.response : err
+        const errorMessage = error.data?.message ? error.data.message : error.message
+        toasterError(errorMessage)(globalDispatch)
+    }
+}
+
+export const markAthleteSession = (athleteId) => async (globalDispatch, history = null) => {
+    try {
+        enableLoading(globalDispatch)
+        const response = await axios(history).put(`/user/sessions/mark/${athleteId}`)
+        toasterSuccess(response.data.message)(globalDispatch)
+    } catch (err) {
+        const error = err.response ? err.response : err
+        const errorMessage = error.data?.message ? error.data.message : error.message
+        toasterError(errorMessage)(globalDispatch)
+    }
+}
+
+export const editAthleteSession = (athleteId, newSessionNumber) => async (globalDispatch, history = null) => {
+    try {
+        enableLoading(globalDispatch)
+        const response = await axios(history).put(`/user/sessions/edit/${athleteId}`, { newSessionNumber })
+        toasterSuccess(response.data.message)(globalDispatch)
+    } catch (err) {
+        const error = err.response ? err.response : err
+        const errorMessage = error.data?.message ? error.data.message : error.message
+        toasterError(errorMessage)(globalDispatch)
+    }
+}
+
 export const updateEmail = (email, updateUser, disableInputs) => async (globalDispatch, history = null) => {
     try {
         enableLoading(globalDispatch)
         const response = await axios(history).put('/user/email', { email })
-        updateUser()
-        disableInputs(false)
-        toasterSuccess(response.data.message)(globalDispatch)
+        updateUser(); disableInputs(false); toasterSuccess(response.data.message)(globalDispatch)
     } catch (err) {
         const error = err.response ? err.response : err
         const errorMessage = error.data?.message ? error.data.message : error.message
@@ -101,9 +136,7 @@ export const updateCredentials = (formData, updateUser, disableInputs) => async 
     try {
         enableLoading(globalDispatch)
         const response = await axios(history).put('/user/credentials', formData)
-        updateUser()
-        disableInputs(false)
-        toasterSuccess(response.data.message)(globalDispatch)
+        updateUser(); disableInputs(false); toasterSuccess(response.data.message)(globalDispatch)
     } catch (err) {
         const error = err.response ? err.response : err
         const errorMessage = error.data?.message ? error.data.message : error.message
@@ -115,9 +148,7 @@ export const updateAvatar = (avatarData, updateUser, deleteUploadingAvatar) => a
     try {
         enableLoading(globalDispatch)
         const response = await axios(history).put('/user/avatar', avatarData)
-        updateUser()
-        deleteUploadingAvatar()
-        toasterSuccess(response.data.message)(globalDispatch)
+        updateUser(); deleteUploadingAvatar(); toasterSuccess(response.data.message)(globalDispatch)
     } catch (err) {
         const error = err.response ? err.response : err
         const errorMessage = error.data?.message ? error.data.message : error.message
@@ -129,8 +160,7 @@ export const sendChangePasswordEmail = (currentPassword, disableInputs) => async
     try {
         enableLoading(globalDispatch)
         const response = await axios(history).post('/user/change-password', { currentPassword })
-        disableInputs(false)
-        dispatch({ type: SEND_CHANGE_PASS_EMAIL })
+        disableInputs(false); dispatch({ type: SEND_CHANGE_PASS_EMAIL })
         toasterInfo(response.data.message)(globalDispatch)
     } catch (err) {
         const error = err.response ? err.response : err

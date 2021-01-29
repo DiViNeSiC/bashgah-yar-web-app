@@ -2,7 +2,9 @@ import { useContext, useEffect, useState } from "react"
 import { GlobalContext } from "../../../Context/provider"
 import { methods, registerTypes } from '../../../Constants/registerMethods'
 import GymForm from '../../../Layout/RegisterControls/Forms/gymForm'
+import MedicForm from '../../../Layout/RegisterControls/Forms/gymManagerForm'
 import GymAdminForm from '../../../Layout/RegisterControls/Forms/gymAdminForm'
+import SupportForm from '../../../Layout/RegisterControls/Forms/gymManagerForm'
 import GymManagerForm from '../../../Layout/RegisterControls/Forms/gymManagerForm'
 import CoachAndAthleteForm from '../../../Layout/RegisterControls/Forms/coachAndAthleteForm'
 import { setRegisterMethods, setRegisterMethodOption } from '../../../Context/RegisterControls/actions'
@@ -19,7 +21,9 @@ export default () => {
         setRegisterMethods(registerMethods)(registersDispatch)
     }
 
-    const setMethod = () => { if (registersMethods) handleChangeForm(registersMethods[0]) }
+    const setMethod = () => {
+        if (registersMethods) handleChangeForm(registersMethods[0])
+    }
     
     const onSelectForm = ({ target: { value }}) => {
         if (!registersMethods) return
@@ -33,7 +37,9 @@ export default () => {
         if (!selectedMethod) return
         switch(selectedMethod.value) {
             case registerTypes.gym: return GymForm
+            case registerTypes.medic: return MedicForm
             case registerTypes.admin: return GymAdminForm
+            case registerTypes.support: return SupportForm
             case registerTypes.manager: return GymManagerForm
             case registerTypes.coach: return CoachAndAthleteForm
             case registerTypes.athlete: return CoachAndAthleteForm
@@ -41,7 +47,9 @@ export default () => {
         }
     }
 
-    const handleSetForm = () => { if (selectedMethod) setForm(handleFindForm) }
+    const handleSetForm = () => {
+        if (selectedMethod) setForm(handleFindForm)
+    }
     
     useEffect(handleRegisterMethods, [user])
     useEffect(setMethod, [registersMethods])
